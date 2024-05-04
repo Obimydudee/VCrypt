@@ -25,7 +25,8 @@ namespace VCrypt
         };
         static void Main(string[] args)
         {
-
+            GC.Collect();
+            FileAffiliation.doDahTing();
             string[] array = new string[]
             {
             "Encrypt Drive", "Decrypt Drive", "Exit"
