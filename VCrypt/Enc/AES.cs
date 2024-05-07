@@ -18,6 +18,7 @@ namespace VCrypt.Enc
                 Rfc2898DeriveBytes key = new Rfc2898DeriveBytes(password, saltBytes, 550000);
                 aesAlg = new RijndaelManaged();
                 aesAlg.Key = key.GetBytes(aesAlg.KeySize / 8);
+                aesAlg.Padding = PaddingMode.Zeros;
                 ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
                 using (MemoryStream msEncrypt = new MemoryStream())
                 {
@@ -72,6 +73,7 @@ namespace VCrypt.Enc
                     aesAlg = new RijndaelManaged();
                     aesAlg.Key = key.GetBytes(aesAlg.KeySize / 8);
                     aesAlg.IV = ReadByteArray(msDecrypt);
+                    aesAlg.Padding = PaddingMode.Zeros;
                     ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
                     using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
                     {

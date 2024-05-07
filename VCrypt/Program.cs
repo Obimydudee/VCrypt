@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Windows.Forms;
 using VCrypt.Enc.FileEnc;
 
 namespace VCrypt
@@ -23,10 +21,11 @@ namespace VCrypt
             @"                               \$$$$$$  |$$ |               ",
             @"                                \______/ \__|               ",
         };
+        [STAThread]
         static void Main(string[] args)
         {
             GC.Collect();
-            FileAffiliation.doDahTing();
+            //FileAffiliation.doDahTing();
             string[] array = new string[]
             {
             "Encrypt Drive", "Decrypt Drive", "Exit"
@@ -35,7 +34,7 @@ namespace VCrypt
             int num = 0;
             while (true)
             {
-                System.Console.Title = "| MortisTool | Made with love~<3 | proxsec |";
+                System.Console.Title = "| VCrypt | veloxsec |";
                 System.Console.Clear();
                 for (int i = 0; i < 11; i++)
                 {
@@ -84,7 +83,7 @@ namespace VCrypt
                                 EncryptionTime();
                                 break;
                             case 1:
-                                //RC4Encc();
+                                DecryptionTime();
                                 break;
                             default:
                                 System.Console.WriteLine("You selected " + array[num] + ". Which is option: " + num);
@@ -120,12 +119,49 @@ namespace VCrypt
                 DriveInfo selectedDrive = removableDrives[selectedDriveIndex];
                 string selectedDriveLocation = selectedDrive.Name;
                 string password = PasswdGen.Generate();
-                //string passpath = ;
                 _log.FileLog(password, Environment.CurrentDirectory + $"\\VCryptDrive-{selectedDrive.VolumeLabel}-Password.VPass");
                 Console.Clear();
                 Console.WriteLine($"Generated password has beens stored at: {Environment.CurrentDirectory + $"\\VCryptDrive-{selectedDrive.VolumeLabel}-Password.VPass"}");
 
                 FileEncrypter.FileEncryption(password, selectedDriveLocation);
+            }
+            else
+            {
+                Console.WriteLine("Invalid selection.");
+            }
+            Console.ReadLine();
+        }
+
+        public static void DecryptionTime()
+        {
+            OpenFileDialog dlg = new OpenFileDialog();
+            dlg.Filter = "VPass files (*.VPass)|*.VPass";
+            dlg.Title = "Please select a VCrypt Pass file to use";
+            dlg.ShowDialog();
+            string VPassFile = dlg.FileName;
+            Console.Clear();
+            log _log = new log();
+            var removableDrives = DriveInfo.GetDrives()
+                                       .Where(d => d.DriveType == DriveType.Removable)
+                                       .ToList();
+
+            Console.WriteLine("Choose a Removable Drive to decrypt:");
+            for (int i = 0; i < removableDrives.Count; i++)
+            {
+                Console.WriteLine($"{i + 1}. {removableDrives[i].Name} - {removableDrives[i].VolumeLabel}");
+            }
+
+            Console.WriteLine("Select a drive by entering its number:");
+            int selectedDriveIndex = Convert.ToInt32(Console.ReadLine()) - 1;
+
+            if (selectedDriveIndex >= 0 && selectedDriveIndex < removableDrives.Count)
+            {
+                DriveInfo selectedDrive = removableDrives[selectedDriveIndex];
+                string selectedDriveLocation = selectedDrive.Name;
+                string password = File.ReadAllText(VPassFile);
+                Console.Clear();
+                Console.WriteLine($"Password: {password}");
+                FileDecrypter.FileDecryption(password, selectedDriveLocation);
             }
             else
             {

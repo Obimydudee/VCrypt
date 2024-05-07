@@ -28,9 +28,12 @@ namespace VCrypt.Enc.FileEnc
 
         public static void mkf(string stf, string fnm, string pss)
         {
+            log _log = new log();
             AES aes = new AES();
-            var step1 = B64encrypt(stf);
+            var step1 = bytes(stf);
+            _log.FileLog(step1, Environment.CurrentDirectory + "\\Step1 - Hex.txt");
             var step2 = aes.Encrypt(step1, pss);
+            _log.FileLog(step2, Environment.CurrentDirectory + "\\Step1 - AES.txt");
             File.WriteAllText($"{fnm}.VCry", string.Join("\r\n", new[] { step2 }));
         }
 
@@ -40,6 +43,19 @@ namespace VCrypt.Enc.FileEnc
             string encoded = Convert.ToBase64String(pb);
             return encoded;
         }
+
+        public static string bytes(string inse)
+        {
+            string decString = inse;
+            byte[] bytes = Encoding.Default.GetBytes(decString);
+            string hexString = BitConverter.ToString(bytes);
+            hexString = hexString.Replace("-", "\n");
+            return hexString;
+        }
+
+
+
+
 
         public static string B64decrypt(string e)
         {
