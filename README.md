@@ -1,5 +1,5 @@
 # What is this?
-It a PoC Thumb Drive encrypter which well works but might need some fixes and patches here and there
+It a PoC Thumb Drive encrypter (inspired by VeraCrypt) which well works but might need some fixes and patches here and there
 
 it might be abit janky in some places but it works to a degree
 
